@@ -130,8 +130,9 @@ class PatentClassifier:
         )
     
     def summarization(self, text:PatentDocument) -> str:
-        summary_prompt=Prompt.SUMMARiZATION.value.format(text=str(text))
-        self.model.chat(summary_prompt)
+        summary_prompt=Prompt.SUMMARIZATION.value.format(text=str(text))
+        return self.model.chat(summary_prompt)
+        
         
     def format_result(self, result: TRIZPrinciple, serial_code: str) -> str:
         return json.dumps({
