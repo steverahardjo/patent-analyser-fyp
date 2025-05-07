@@ -66,12 +66,13 @@ class PatentClassifier:
                     limit=limit
                 )
                 for hit in hits:
-                    topic=hit.payload["topic"]
-                    if topic in topics or hit.payload["discipline"] in topics:
+                    topic_candidate = hit.payload.get("topic") or hit.payload.get("discipline")
+
+                    if topic_candidate in topics:
                         results.append(SearchResult(
-                            text=hit.payload["text"],
+                            text=hit.payload.get("text", ""),
                             score=hit.score * weight,
-                            topic=topic
+                            topic=topic_candidate
                         ))
                     else:
                         continue
@@ -114,7 +115,7 @@ class PatentClassifier:
 
         topic_list = ast.literal_eval(self.model.chat(topic_prompt, 0).strip("```python\n").strip("\n```"))
 
-        context = self.retrieve_context(50, "allenAI_chemData", topic_list, problems_dict)
+        context = self.retrieve_context(20, "allenAI_chemData", topic_list, problems_dict)
         analysis = self.model.chat(analysis_prompt.format(problems=problems_dict, reasoning_trace=context), 5)
         dynamic_rule = self.model.chat(rule_prompt.format(analysis=analysis), 2)
 

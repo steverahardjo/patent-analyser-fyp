@@ -48,11 +48,11 @@ class PatentDocument(BaseModel):
             f"Publication Date: {self.publication_date}" if self.publication_date else "",
             f"Abstract:\n{self.abstract}" if self.abstract else "",
             f"Background & Summary:\n{self.background_summary}" if self.background_summary else "",
-            f"Description:\n{self.description}" if self.description else "",
+            f"Description:\n{self.description[:10000]}" if self.description else "",
             f"Claims:\n{self.claims}" if self.claims else "",
         ]
         return "\n\n".join([part for part in parts if part.strip()])
-
+        
     def __str__(self):
         return self.to_string()
 
