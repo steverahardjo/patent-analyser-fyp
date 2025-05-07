@@ -33,3 +33,4 @@ docker rm patent_server
 
 > 💡 Works on Linux, Windows, and macOS (Intel & Apple Silicon).
 
+Run frontend
