@@ -7,7 +7,7 @@
     "prestart": "npx kill-port 5173",
     "start": "react-scripts start",
     "frontend": "vite",
-    "backend": "docker stop patent_server || true && docker rm patent_server || true && docker run -d -p 8000:8000 --name patent_server holyknight101/backend_patent-analyzer_v1:latest",
+    "backend": "docker stop patent_server || true && docker rm patent_server || true && docker-compose up --build",
     "dev": "concurrently \"npm run backend\" \"npm run frontend\"",
     "build": "vite build",
     "lint": "eslint .",
