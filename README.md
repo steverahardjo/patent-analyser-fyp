@@ -81,3 +81,4 @@ For **x64 architecture** (Intel and AMD processors), Docker and Docker Compose a
 
 Cons: require a lot of memory and storage
 
+Run frontend
