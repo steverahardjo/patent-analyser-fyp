@@ -77,7 +77,7 @@ class Prompt(Enum):
     
     """
     
-    SUMMARiZATION="""
+    SUMMARIZATION="""
     You are a TRIZ expert. Based on these sections I gave you, give me a concise summary of the patent, be concise in 600 words.
     Here is your guide:
     1. Highlight what problem it try to solve 

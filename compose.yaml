@@ -1,23 +1,26 @@
-# Comments are provided throughout this file to help you get started.
-# If you need more help, visit the Docker Compose reference guide at
-# https://docs.docker.com/go/compose-spec-reference/
 
-# Here the instructions define your application as a service called "server".
-# This service is built from the Dockerfile in the current directory.
-# You can add other services your application may depend on here, such as a
-# database or a cache. For examples, see the Awesome Compose repository:
-# https://github.com/docker/awesome-compose
 services:
   server:
-    build: . 
+    build: .
     image: "holyknight101/backend_patent-analyzer_v1"
     container_name: "backend"
     ports:
       - 8000:8000
     depends_on:
-    - qdrant
+      - qdrant
+      - selenium-firefox
     env_file:
-    - .env
+      - .env
+    networks:
+      - qdrant-net
+    # Optional health check to ensure `server` starts only when dependencies are ready
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]  # Update this endpoint as per your server's health check
+      interval: 30s
+      retries: 3
+      start_period: 5s
+      timeout: 10s
+
   qdrant:
     image: qdrant/qdrant
     container_name: qdrant
@@ -25,9 +28,32 @@ services:
       - "6333:6333"  # REST API port
       - "6334:6334"  # gRPC API port
     volumes:
-      - ./qdrant_storage:/qdrant/storage:z
+      - ./qdrant_storage:/qdrant/storage:z  # Ensure volume permissions are correct
     networks:
       - qdrant-net
+    # Optional: Add a health check for qdrant if needed
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:6333/health"]  # Update this if the actual health check is different
+      interval: 30s
+      retries: 3
+      start_period: 5s
+      timeout: 10s
+
+  selenium-firefox:
+    image: selenium/standalone-firefox:latest
+    container_name: selenium-firefox
+    ports:
+      - "4444:4444"
+    shm_size: "2gb"
+    networks:
+      - qdrant-net
+    # Optional: Health check to ensure Selenium container is fully ready
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4444/wd/hub/status"]  # Selenium WebDriver status
+      interval: 30s
+      retries: 3
+      start_period: 5s
+      timeout: 10s
 
 networks:
   qdrant-net:

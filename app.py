@@ -126,5 +126,4 @@ def interact_query():
         return jsonify({'error': f'Error generating response: {str(e)}'}), 500
 
 if __name__ == '__main__':
-    from waitress import serve
-    serve(app, host="0.0.0.0", port=8000)
+    app.run(debug=True, host="0.0.0.0", port=8000)
