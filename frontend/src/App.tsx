@@ -5,10 +5,12 @@
 // import DashboardLayout from './components/tester';
 // import ChatbotDashboard from './components/Dashboard';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import PDFUpload from './components/PDFUpload';
+// import PDFUpload from './components/PDFUpload';
 // import Main from './components/Dashboard';
 import MainDashboard from './components/Dashboard';
 import Chatbot from './components/ChatBot';
+import Dashboard from './components/Dashboard';
+import UploadSection from './components/UploadSection';
 
 function App() {
   return (
@@ -29,15 +31,23 @@ function App() {
     //   </main>
     // </div>
     
-    <Router>
-      <Routes>
-        <Route path="/" element={<MainDashboard />}>
-          <Route path="pdf-upload" element={<PDFUpload />} />
-          <Route path="chat" element={<Chatbot />} />
-        </Route>
-      </Routes>
-    </Router>
-  );
+    // <Router>
+    //   <Routes>
+    //     <Route path="/" element={<MainDashboard />}>
+    //       {/* <Route path="pdf-upload" element={<PDFUpload />} /> */}
+    //       <Route path="chat" element={<Chatbot />} />
+    //     </Route>
+    //   </Routes>
+    // </Router>
 
+    <div className="flex items-center justify-center min-h-screen bg-gray-100">
+      <div className="w-full min-h-[90vh] max-w-6xl bg-white border border-gray-100 rounded-2xl shadow-xl p-8 space-y-6 overflow-y-auto">
+        <div className="flex flex-col items-center justify-center text-center">
+          <Dashboard />
+          <Chatbot />
+        </div>
+      </div>
+    </div>
+  );
 }
 export default App;

@@ -1,0 +1,53 @@
+// src/hooks/useChatbot.ts
+import { useState } from 'react';
+import { uploadPatentPDF, askQuery } from '../api';
+
+export function useChatbot() {
+  const [file, setFile] = useState<File | null>(null);
+  const [uploading, setUploading] = useState(false);
+  const [error, setError] = useState('');
+  const [patentInfo, setPatentInfo] = useState<any>(null);
+  const [answer, setAnswer] = useState('');
+  const [chatLoading, setChatLoading] = useState(false);
+
+  const uploadFile = async (selectedFile: File) => {
+    setFile(selectedFile);
+    setUploading(true);
+    setError('');
+    try {
+      const data = await uploadPatentPDF(selectedFile);
+      setPatentInfo(data);
+      setAnswer('');
+    } catch (err: any) {
+      setError(err.response?.data?.error || 'Upload failed');
+      setPatentInfo(null);
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const sendQuestion = async (question: string) => {
+    if (!question.trim()) return;
+    setChatLoading(true);
+    setError('');
+    try {
+      const res = await askQuery(question);
+      setAnswer(res.answer);
+    } catch (err: any) {
+      setError(err.response?.data?.error || 'Query failed');
+    } finally {
+      setChatLoading(false);
+    }
+  };
+
+  return {
+    file,
+    uploading,
+    error,
+    patentInfo,
+    answer,
+    chatLoading,
+    uploadFile,
+    sendQuestion,
+  };
+}
