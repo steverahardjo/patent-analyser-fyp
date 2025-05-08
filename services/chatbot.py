@@ -14,7 +14,7 @@ class PatentChatbot:
         self.openai_client = Openai("OPENAI_KEY")
         self.cohere_client = cohere.Client(self.cohere_key)
         self.memory = ConversationBufferMemory(memory_key="chat_history", input_key="query")
-        self.qdrant = QdrantClient(host="localhost", api_key=None)
+        self.qdrant = QdrantClient(host="qdrant", api_key=None)
         self.collection_name = "patent_chunks"
         self.text=text
         self.init_chatbot(self.text)

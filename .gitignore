@@ -11,3 +11,6 @@ wheels/
 .env
 qdrant_storage/
 11543219.pdf
+
+node_modules/
+package-lock.json

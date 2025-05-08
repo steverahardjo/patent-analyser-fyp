@@ -1,6 +1,7 @@
 
 services:
   server:
+    build: .
     image: "holyknight101/backend_patent-analyzer_v1"
     container_name: "backend"
     ports:
