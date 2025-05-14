@@ -43,7 +43,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
       <div className="p-4 border-b border-gray-200 bg-white">
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="text-lg font-medium text-gray-900">{document.name}</h2>
+            <h2 className="text-lg font-medium text-gray-900">{document.patent_number}.pdf</h2>
             <p className="text-sm text-gray-500">
               Uploaded on {document.uploadDate.toLocaleDateString()}
             </p>
