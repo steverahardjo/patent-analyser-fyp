@@ -1,9 +1,10 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Sidebar from './components/Sidebar';
-import { Home, Leaf } from 'lucide-react';
+import { Leaf } from 'lucide-react';
 import UploadPage from './pages/UploadPage';
 import ChatbotPage from './pages/ChatbotPage';
 import HistoryPage from './pages/HistoryPage';
+import HomePage from './pages/HomePage';
 
 function App() {
   return (
@@ -23,7 +24,7 @@ function App() {
 
           <main className="flex-1 overflow-hidden p-4">
             <Routes>
-              <Route path="/home" element={<Home />} />
+              <Route path="/home" element={<HomePage />} />
               <Route path="/upload" element={<UploadPage />} />
               <Route path="/history" element={<HistoryPage />} />
               <Route path="/chat/:documentId?" element={<ChatbotPage />} />
