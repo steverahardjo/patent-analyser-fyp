@@ -10,17 +10,24 @@ export function useChatbot() {
   const [answer, setAnswer] = useState('');
   const [chatLoading, setChatLoading] = useState(false);
 
-  const uploadFile = async (selectedFile: File) => {
+  const uploadFile = async (selectedFile: File): Promise<{ id: string; [key: string]: any }> => {
     setFile(selectedFile);
     setUploading(true);
     setError('');
     try {
       const data = await uploadPatentPDF(selectedFile);
-      setPatentInfo(data);
+      const currentDate = new Date().toISOString().split('T')[0];
+      const dataWithId = {
+        ...data,
+        id: `${data.patent_number}_${currentDate}`,
+      };
+      setPatentInfo(dataWithId);
       setAnswer('');
+      return dataWithId;
     } catch (err: any) {
       setError(err.response?.data?.error || 'Upload failed');
       setPatentInfo(null);
+      throw err;
     } finally {
       setUploading(false);
     }

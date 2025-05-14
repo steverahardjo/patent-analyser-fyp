@@ -2,7 +2,11 @@ import { FileUp, Upload } from 'lucide-react';
 import { useChatbot } from '../hooks/useChatbot';
 import React, { useState } from 'react';
 
-export default function UploadSection() {
+interface PdfUploadProps {
+  onUploadSuccess: (doc: { id: string }) => void;
+}
+
+export default function UploadSection({onUploadSuccess}: PdfUploadProps) {
   const { uploadFile, file, uploading, error } = useChatbot();
   const [isDragging, setIsDragging] = useState(false);
 
@@ -25,7 +29,9 @@ export default function UploadSection() {
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
-      uploadFile(e.target.files[0]);
+      uploadFile(e.target.files[0])
+        .then((doc) => onUploadSuccess(doc))
+        .catch(console.error);
     }
   };
 
