@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import ChatInterface from '../components/ChatInterface';
 import { Message, ActionType } from '../types';
@@ -13,8 +13,10 @@ const ChatbotPage = () => {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [error, setError] = useState('');
 
-  // Load patent from localStorage based on documentId
+  // Restore patent info from localStorage
   useEffect(() => {
+    if (!documentId) return;
+
     const stored = localStorage.getItem('uploadedPatentInfo');
     if (stored) {
       const parsed = JSON.parse(stored);
@@ -28,7 +30,38 @@ const ChatbotPage = () => {
     }
   }, [documentId]);
 
-  // Handle sending user question
+  // Restore messages from localStorage only if empty
+  useEffect(() => {
+    if (!documentId || messages.length > 0) return;
+
+    const stored = localStorage.getItem('chatHistory');
+    if (stored) {
+      const parsed = JSON.parse(stored);
+      const existingMessages = parsed[documentId];
+      if (existingMessages?.length) {
+        // ✅ Hydrate timestamps back to Date objects
+        const hydratedMessages = existingMessages.map((msg: Message) => ({
+          ...msg,
+          timestamp: new Date(msg.timestamp),
+        }));
+      
+        setMessages(hydratedMessages);
+        console.log("✅ Restored chat messages from localStorage");
+      }    
+    }
+  }, [documentId, messages.length]);
+
+  // ✅ Persist messages to localStorage when they change
+  useEffect(() => {
+    if (!documentId || messages.length === 0) return;
+
+    const existing = localStorage.getItem('chatHistory');
+    const parsed = existing ? JSON.parse(existing) : {};
+
+    parsed[documentId] = messages;
+    localStorage.setItem('chatHistory', JSON.stringify(parsed));
+  }, [messages, documentId]);
+
   const handleSendMessage = async (content: string) => {
     const userMessage: Message = {
       id: Date.now().toString(),
@@ -38,6 +71,18 @@ const ChatbotPage = () => {
     };
 
     setMessages((prev) => [...prev, userMessage]);
+
+    if (!patentInfo) {
+      const noPDFReply: Message = {
+        id: (Date.now() + 1).toString(),
+        content: 'No PDF uploaded. Please upload a patent in the <a href="/upload" class="text-blue-600 underline">Upload Page</a> to continue.',
+        sender: 'ai',
+        timestamp: new Date(),
+      };
+      setMessages((prev) => [...prev, noPDFReply]);
+      return;
+    }
+
     setIsAnalyzing(true);
     setError('');
 
@@ -58,27 +103,25 @@ const ChatbotPage = () => {
       const errorMessage = err.response?.data?.error || 'Query failed';
       setError(errorMessage);
 
-      setMessages((prev) => [
-        ...prev,
-        {
-          id: (Date.now() + 2).toString(),
-          content: `❌ Error: ${errorMessage}`,
-          sender: 'ai',
-          timestamp: new Date(),
-        },
-      ]);
+      const errorMessageObject: Message = {
+        id: (Date.now() + 3).toString(),
+        content: `❌ Error: ${errorMessage}`,
+        sender: 'ai',
+        timestamp: new Date(),
+      };
+
+      setMessages((prev) => [...prev, errorMessageObject]);
     } finally {
       setIsAnalyzing(false);
     }
   };
 
-  // Handle simulated action responses
   const handleAction = (action: ActionType) => {
     const actionMessage: Message = {
-      id: Date.now().toString(),
-      content: `[Action requested: ${action}]`,
-      sender: 'user',
-      timestamp: new Date(),
+    id: Date.now().toString(),
+    content: `[Action requested: ${action}]`,
+    sender: 'user',
+    timestamp: new Date(),
     };
 
     setMessages((prev) => [...prev, actionMessage]);
@@ -96,9 +139,6 @@ const ChatbotPage = () => {
           case 'classify':
             responseContent = `📊 Classification: ${patentInfo.classification_result}`;
             break;
-          case 'findSimilarity':
-            responseContent = `🔍 Similar patents to "${patentInfo.title}" would be listed here. (Simulated)`;
-            break;
         }
       }
 
@@ -114,15 +154,7 @@ const ChatbotPage = () => {
     }, 1500);
   };
 
-  if (!patentInfo) {
-    return (
-      <div className="flex items-center justify-center h-full">
-        <p className="text-gray-500">Please upload a patent first and access it through the Upload page.</p>
-      </div>
-    );
-  }
-
-  return (
+  return ( 
     <ChatInterface
       document={patentInfo}
       messages={messages}

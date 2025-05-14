@@ -1,11 +1,10 @@
 import { NavLink } from 'react-router-dom';
-import { Upload, History, MessageSquare, Home } from 'lucide-react';
+import { Upload, MessageSquare, Home } from 'lucide-react';
 
 const Sidebar = () => {
   const navItems = [
     { to: '/home', icon: Home, label: 'Home' },
     { to: '/upload', icon: Upload, label: 'Upload' },
-    { to: '/history', icon: History, label: 'History' },
     { to: '/chat', icon: MessageSquare, label: 'Chatbot' },
   ];
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import { FileText, Tag, Search } from 'lucide-react';
+import { FileText, Tag } from 'lucide-react';
 import { ActionType } from '../types';
 
 interface ActionButtonsProps {
@@ -20,13 +20,7 @@ const ActionButtons: React.FC<ActionButtonsProps> = ({ onAction, isDisabled }) =
       icon: <Tag className="w-4 h-4 mr-2" />,
       action: 'classify' as ActionType,
       color: 'bg-purple-600 hover:bg-purple-700 focus:ring-purple-500',
-    },
-    {
-      label: 'Find Similarity',
-      icon: <Search className="w-4 h-4 mr-2" />,
-      action: 'findSimilarity' as ActionType,
-      color: 'bg-indigo-600 hover:bg-indigo-700 focus:ring-indigo-500',
-    },
+    }
   ];
 
   return (

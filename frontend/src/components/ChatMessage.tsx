@@ -31,9 +31,10 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
               : 'bg-white border border-gray-200 shadow-sm rounded-tl-none'
           }`}
         >
-          <p className={isUser ? 'text-white' : 'text-gray-800'}>
-            {message.content}
-          </p>
+          <div
+            className={isUser ? 'text-white' : 'text-gray-800'}
+            dangerouslySetInnerHTML={{ __html: message.content }}
+          />
           <div className={`text-xs mt-1 ${isUser ? 'text-blue-200' : 'text-gray-500'}`}>
             {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
           </div>

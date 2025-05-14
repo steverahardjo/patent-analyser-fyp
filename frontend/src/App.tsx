@@ -3,7 +3,6 @@ import Sidebar from './components/Sidebar';
 import { Home, Leaf } from 'lucide-react';
 import UploadPage from './pages/UploadPage';
 import ChatbotPage from './pages/ChatbotPage';
-import HistoryPage from './pages/HistoryPage';
 
 function App() {
   return (
@@ -25,7 +24,6 @@ function App() {
             <Routes>
               <Route path="/home" element={<Home />} />
               <Route path="/upload" element={<UploadPage />} />
-              <Route path="/history" element={<HistoryPage />} />
               <Route path="/chat/:documentId?" element={<ChatbotPage />} />
             </Routes>
           </main>
