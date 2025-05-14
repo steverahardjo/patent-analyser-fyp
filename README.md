@@ -23,7 +23,8 @@ Ensure you have **Docker** and **Docker Compose** installed on your machine. You
    This will pull the necessary images and organize them to run the services specified in the `docker-compose.yml` file.
 
    ```bash
-   <!-- docker pull holyknight101/backend_patent-analyzer_v1:latest -->
+   docker pull holyknight101/backend_patent-analyzer_v1:latest
+   docker-compose up --build
    npm i
    npm run dev
    ```
