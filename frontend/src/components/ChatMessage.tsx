@@ -53,6 +53,15 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
         {children}
       </li>
     ),
+    a: ({ children, href, ...props }) => (
+      <a
+        href={href}
+        className="text-blue-600 underline hover:text-blue-800"
+        {...props}
+      >
+        {children}
+      </a>
+    ),    
     
     // Style for code blocks with fixed TypeScript error
     code: ({ className, children, ...props }) => {
@@ -105,7 +114,8 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
         >
           <div className={isUser ? 'text-white' : 'text-gray-800'}>
             {isUser ? (
-              message.content
+              // message.content
+              <div dangerouslySetInnerHTML={{ __html: message.content }} />
             ) : (
               <ReactMarkdown components={components}>{message.content}</ReactMarkdown>
             )}

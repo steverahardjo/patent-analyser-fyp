@@ -3,6 +3,7 @@ import { Send } from 'lucide-react';
 import ActionButtons from './ActionButtons';
 import ChatMessage from './ChatMessage';
 import { Message, PDFDocument, ActionType } from '../types';
+import { Link } from 'react-router-dom';
 
 interface ChatInterfaceProps {
   document: PDFDocument;
@@ -44,13 +45,19 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
         <div className="flex items-center justify-between">
           <div>
             <h2 className="text-lg font-medium text-gray-900">
-              {document?.patent_number || "No PDF Patent Uploaded"}
+              {document?.patent_number
+                ? `${document.patent_number}.pdf`
+                : "No PDF Patent Uploaded"}
             </h2>
             <p className="text-sm text-gray-500">
-              Uploaded on{" "}
               {document?.uploadDate
-                ? new Date(document.uploadDate).toLocaleDateString()
-                : "Unknown"}
+                ? `Uploaded on ${new Date(document.uploadDate).toLocaleDateString()}`
+                : (
+                  <Link to="/upload" className="text-sm text-blue-600 underline hover:text-blue-800">
+                    You must upload a PDF patent document before accessing the chatbot
+                  </Link>
+                )
+              }
             </p>
           </div>
           <ActionButtons onAction={onAction} isDisabled={isAnalyzing} />

@@ -10,12 +10,15 @@ export function useChatbot() {
   const [answer, setAnswer] = useState('');
   const [chatLoading, setChatLoading] = useState(false);
 
-  const uploadFile = async (selectedFile: File): Promise<{ id: string; [key: string]: any }> => {
+  const uploadFile = async (
+    selectedFile: File,
+    onProgress?: (percent: number) => void
+  ): Promise<{ id: string; [key: string]: any }> => {
     setFile(selectedFile);
     setUploading(true);
     setError('');
     try {
-      const data = await uploadPatentPDF(selectedFile);
+      const data = await uploadPatentPDF(selectedFile, onProgress);
       const currentDate = new Date().toISOString().split('T')[0];
       const dataWithId = {
         ...data,
@@ -31,7 +34,7 @@ export function useChatbot() {
     } finally {
       setUploading(false);
     }
-  };
+  };  
 
   const sendQuestion = async (question: string) => {
     if (!question.trim()) return;
@@ -51,6 +54,7 @@ export function useChatbot() {
     file,
     uploading,
     error,
+    setError,
     patentInfo,
     answer,
     chatLoading,
