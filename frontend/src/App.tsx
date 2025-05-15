@@ -10,9 +10,9 @@ import ChartsPage from './pages/ChartsPage';
 function App() {
   return (
     <Router>
-      <div className="min-h-screen bg-gray-50 flex flex-col overflow-y-auto">
+      <div className="min-h-screen bg-transparent flex flex-col overflow-y-auto">
         {/* Header */}
-        <header className="bg-white border-b border-gray-200 shadow-sm py-4 px-6 shrink-0">
+        <header className="bg-white border-b bg-transparent shadow-sm py-4 px-6 shrink-0">
           <div className="flex items-center space-x-2">
             <Leaf className="h-8 w-8 text-emerald-600" />
             <h1 className="ml-3 text-2xl font-semibold text-gray-900">EcoPatent Analyzer</h1>
