@@ -1,0 +1,62 @@
+[
+  {
+    "Topic":"Materials Science",
+    "Count":59
+  },
+  {
+    "Topic":"Chemical Engineering",
+    "Count":58
+  },
+  {
+    "Topic":"Electrical Engineering",
+    "Count":34
+  },
+  {
+    "Topic":"Environmental Chemistry",
+    "Count":33
+  },
+  {
+    "Topic":"Green Chemistry",
+    "Count":28
+  },
+  {
+    "Topic":"Industrial Chemistry",
+    "Count":17
+  },
+  {
+    "Topic":"Polymer Chemistry",
+    "Count":15
+  },
+  {
+    "Topic":"Electrochemistry",
+    "Count":12
+  },
+  {
+    "Topic":"Biochemistry",
+    "Count":11
+  },
+  {
+    "Topic":"Organic Chemistry",
+    "Count":6
+  },
+  {
+    "Topic":"Thermodynamics",
+    "Count":6
+  },
+  {
+    "Topic":"Analytical Chemistry",
+    "Count":5
+  },
+  {
+    "Topic":"Nanotechnology",
+    "Count":5
+  },
+  {
+    "Topic":"Energy Storage",
+    "Count":3
+  },
+  {
+    "Topic":"Inorganic Chemistry",
+    "Count":2
+  }
+]
