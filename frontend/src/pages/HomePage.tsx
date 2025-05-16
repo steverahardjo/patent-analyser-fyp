@@ -5,8 +5,8 @@ import TechStack from '../components/TechStack';
 
 function HomePage() {
   return (
-    <main className="w-full h-[calc(100vh-64px)]">
-      <div className="max-w-7xl mx-auto h-full overflow-y-auto px-4 sm:px-6 lg:px-8 py-8 space-y-20 scroll-smooth">
+    <main className="w-full h-full overflow-y-auto overflow-x-hidden">
+      <div className="min-h-full w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-20">
         <Hero />
         <HowItWorks />
         <AboutSection />
@@ -15,6 +15,7 @@ function HomePage() {
     </main>
   );
 }
+
 
 
 export default HomePage;
