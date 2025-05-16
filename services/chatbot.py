@@ -8,8 +8,8 @@ from fastembed import SparseTextEmbedding
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 import tqdm
 
-from LLM import Openai
-from dtype import PatentDocument
+from services.LLM import Openai
+from services.dtype import PatentDocument
 
 class PatentChatbot:
     def __init__(self, text: PatentDocument | str):

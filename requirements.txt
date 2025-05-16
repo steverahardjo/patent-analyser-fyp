@@ -44,6 +44,7 @@ dotenv==0.9.9
     # via beta (pyproject.toml)
 eval-type-backport==0.2.2
     # via together
+fastembed>=0.1.0
 fastavro==1.10.0
     # via cohere
 filelock==3.18.0
