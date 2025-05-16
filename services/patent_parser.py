@@ -137,6 +137,4 @@ class DocProcessing:
         if claims_header:
             claims_section = claims_header.find_parent('section')
             self.document.claims = claims_section.get_text(separator=' ', strip=True)
-        print(self.document.claims)
-        print(self.document.abstract)
         return self.document
