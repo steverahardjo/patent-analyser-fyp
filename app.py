@@ -5,8 +5,10 @@ from services.patent_parser import DocProcessing
 from services.textClassification import PatentClassifier
 from services.LLM import Openai
 from services.chatbot import PatentChatbot
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app)
 
 # --- New Improved Regex Patterns ---
 PATENT_NUM_PATTERN = re.compile(

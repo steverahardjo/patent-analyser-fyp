@@ -16,14 +16,17 @@ Ensure you have **Docker** and **Docker Compose** installed on your machine. You
 
    ```bash
    git clone <repository_url>
-   cd <repository_directory>
+   cd frontend
    ```
 
 2. **Build and start the Docker containers**:
    This will pull the necessary images and organize them to run the services specified in the `docker-compose.yml` file.
 
    ```bash
+   docker pull holyknight101/backend_patent-analyzer_v1:latest
    docker-compose up --build
+   npm i
+   npm run dev
    ```
 
 ### App will be available at:
@@ -62,15 +65,8 @@ To stop and remove the Docker containers, run the following commands:
 
    ```bash
    docker-compose down
+   docker image prune -f
    ```
-
-2. **Remove any stopped containers** (optional):
-
-   ```bash
-   docker stop patent_server
-   docker rm patent_server
-   ```
-
 ---
 
 ## 💡 Works on x64 Architecture
