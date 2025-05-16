@@ -81,8 +81,10 @@ def upload_pdf():
         # Process and classify
         try:
             patent_doc = processor.process_document(extracted_num)
+            print(f"DEBUG: Processed patent document: {patent_doc.title}")
             raw_result = classifier.classify_patent(patent_doc.abstract, patent_doc.claims)
             summarization = classifier.summarization(patent_doc)
+            suggested_questions = classifier.generate_suggested_questions(summarization+raw_result.final_classification)
             globalPatent = patent_doc
 
             return jsonify({
@@ -92,7 +94,8 @@ def upload_pdf():
                 'Inventors': patent_doc.inventor,
                 'publication_date': patent_doc.publication_date,
                 'classification_result': raw_result.final_classification,
-                'summ': summarization
+                'summ': summarization,
+                'suggested_questions': suggested_questions
             }), 200
 
         except ValidationError as ve:
@@ -122,6 +125,8 @@ def interact_query():
     try:
         result = chatbot.generate_patent_answer(question)
         return jsonify({'answer': result}), 200
+    except KeyError as ke:
+        return jsonify({'error': str(ke)}), 500
     except Exception as e:
         return jsonify({'error': f'Error generating response: {str(e)}'}), 500
 

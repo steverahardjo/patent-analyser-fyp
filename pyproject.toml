@@ -15,4 +15,5 @@ dependencies = [
     "qdrant-client>=1.14.2",
     "selenium>=4.31.0",
     "together>=1.5.6",
+    "tqdm>=4.67.1",
 ]
