@@ -32,7 +32,7 @@ const Chatbot: React.FC = () => {
           'Content-Type': 'multipart/form-data',
         },
       });
-
+      console.log("📝 Uploaded PDF response:", res.data);
       setPatentInfo(res.data);
       setAnswer('');
     } catch (err: any) {

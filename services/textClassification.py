@@ -102,33 +102,106 @@ class PatentClassifier:
 
         flat_results = [text for topic in grouped for text in grouped[topic]]
         return "\n".join(flat_results)
+    
+    def add_guardrails(self, problem: str) -> bool:
+        """
+        Validates if a problem statement or query is appropriate for processing.
+        
+        Args:
+            problem (str): The problem statement or query to validate
+            
+        Returns:
+            bool: True if the input is valid, False otherwise
+            
+        Raises:
+            ValueError: If the LLM response is invalid
+        """
+        try:
+            # Check if it's a summary query
+            if "what" in problem.lower() and "about" in problem.lower():
+                return True
+                
+            # For other queries, check ecological relevance
+            prompt = Prompt.ECO_GUARDRAIL.value.format(problem=problem)
+            response = self.model.chat(prompt)
+            response = response.strip().lower()
+            
+            if response == "yes":
+                return True
+            elif response == "no":
+                return False
+            else:
+                raise ValueError(f"Invalid response from LLM: {response}")
+                
+        except Exception as e:
+            print(f"Error in guardrail classification: {str(e)}")
+            raise
 
     def classify_patent(self, abstract: str, claims: str) -> TRIZPrinciple:
-        extraction_prompt = Prompt.PROBLEM_EXTRACTION.value.format(claims=claims)
-        topic_prompt = Prompt.TOPIC_PROMPT.value.format(abstract=abstract)
-        analysis_prompt = Prompt.PROBLEM_ANALYSIS.value
-        rule_prompt = Prompt.RULE_CREATION.value
-        final_prompt = Prompt.FINAL_CLASSIFICATION.value
-
-        problems_raw = self.model.chat(extraction_prompt, 3)
-        problems_dict = ast.literal_eval(problems_raw.strip("```python\n").strip("\n```"))
-
-        topic_list = ast.literal_eval(self.model.chat(topic_prompt, 0).strip("```python\n").strip("\n```"))
-
-        context = self.retrieve_context(20, "allenAI_chemData", topic_list, problems_dict)
-        analysis = self.model.chat(analysis_prompt.format(problems=problems_dict, reasoning_trace=context), 5)
-        dynamic_rule = self.model.chat(rule_prompt.format(analysis=analysis), 2)
-
-        raw = self.model.chat(final_prompt.format(dynamic_rule=dynamic_rule, claims=claims), 0)
+        """
+        Classifies a patent based on its abstract and claims.
         
-        return ClassificationPipelineOutput(
-            extracted_problems=problems_dict,
-            topics=topic_list,
-            context=context,
-            analysis=analysis,
-            dynamic_rule=dynamic_rule,
-            final_classification=raw
-        )
+        Args:
+            abstract (str): The patent abstract
+            claims (str): The patent claims
+            
+        Returns:
+            TRIZPrinciple: The classification result
+            
+        Raises:
+            ValueError: If the problem extraction or classification fails
+            Exception: For other processing errors
+        """
+        try:
+            # Extract problems
+            extraction_prompt = Prompt.PROBLEM_EXTRACTION.value.format(claims=claims)
+            problems_raw = self.model.chat(extraction_prompt, 3)
+            
+            # Apply guardrail
+            if not self.add_guardrails(problems_raw):
+                raise ValueError("Problem extraction failed guardrail validation")
+            
+            # Parse problems dictionary
+            try:
+                problems_dict = ast.literal_eval(problems_raw.strip("```python\n").strip("\n```"))
+            except (SyntaxError, ValueError) as e:
+                raise ValueError(f"Failed to parse problems dictionary: {str(e)}")
+            
+            # Extract topics
+            topic_prompt = Prompt.TOPIC_PROMPT.value.format(abstract=abstract)
+            try:
+                topic_list = ast.literal_eval(self.model.chat(topic_prompt, 0).strip("```python\n").strip("\n```"))
+            except (SyntaxError, ValueError) as e:
+                raise ValueError(f"Failed to parse topic list: {str(e)}")
+            
+            # Retrieve context and perform analysis
+            context = self.retrieve_context(20, "allenAI_chemData", topic_list, problems_dict)
+            analysis_prompt = Prompt.PROBLEM_ANALYSIS.value
+            analysis = self.model.chat(analysis_prompt.format(problems=problems_dict, reasoning_trace=context), 5)
+            
+            # Generate dynamic rule
+            rule_prompt = Prompt.RULE_CREATION.value
+            dynamic_rule = self.model.chat(rule_prompt.format(analysis=analysis), 2)
+            
+            # Final classification
+            final_prompt = Prompt.FINAL_CLASSIFICATION.value
+            raw = self.model.chat(final_prompt.format(dynamic_rule=dynamic_rule, claims=claims), 0)
+            
+            return ClassificationPipelineOutput(
+                extracted_problems=problems_dict,
+                topics=topic_list,
+                context=context,
+                analysis=analysis,
+                dynamic_rule=dynamic_rule,
+                final_classification=raw
+            )
+            
+        except ValueError as ve:
+            print(f"Validation error in patent classification: {str(ve)}")
+            raise
+        except Exception as e:
+            print(f"Error in patent classification: {str(e)}")
+            raise
     
     def summarization(self, text:PatentDocument) -> str:
         summary_prompt=Prompt.SUMMARIZATION.value.format(text=str(text))
@@ -140,3 +213,20 @@ class PatentClassifier:
             "SerialCode": serial_code,
             "Results": result.dict()
         }, indent=2)
+
+    def generate_suggested_questions(self, summary: str) -> str:
+        prompt = f"""
+You are a helpful assistant. Based on the following patent summary, suggest 5 intelligent and relevant questions that a user might want to ask about this patent.
+Make sure the questions are open-ended, technical, and focused on clarifying key aspects.
+
+Patent Summary:
+{summary}
+
+Output format: points 1 to 5
+"""
+        try:
+            response = self.model.chat(prompt)
+            return response
+        except Exception as e:
+            print(f"Error generating suggested questions: {e}")
+            return []
