@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Sidebar from './components/Sidebar';
 import { Leaf } from 'lucide-react';
 import UploadPage from './pages/UploadPage';
@@ -24,6 +24,7 @@ function App() {
 
           <main className="flex-1 overflow-hidden p-4">
             <Routes>
+              <Route path="/" element={<Navigate to="/home" replace />} />
               <Route path="/home" element={<HomePage />} />
               <Route path="/charts" element={<ChartsPage />} />
               <Route path="/upload" element={<UploadPage />} />
