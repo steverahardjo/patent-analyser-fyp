@@ -4,7 +4,6 @@ import { uploadPatentPDF, askQuery } from '../api';
 
 export function useChatbot() {
   const [file, setFile] = useState<File | null>(null);
-  const [uploading, setUploading] = useState(false);
   const [error, setError] = useState('');
   const [patentInfo, setPatentInfo] = useState<any>(null);
   const [answer, setAnswer] = useState('');
@@ -15,7 +14,6 @@ export function useChatbot() {
     onProgress?: (percent: number) => void
   ): Promise<{ id: string; [key: string]: any }> => {
     setFile(selectedFile);
-    setUploading(true);
     setError('');
     try {
       const data = await uploadPatentPDF(selectedFile, onProgress);
@@ -31,10 +29,8 @@ export function useChatbot() {
       setError(err.response?.data?.error || 'Upload failed');
       setPatentInfo(null);
       throw err;
-    } finally {
-      setUploading(false);
     }
-  };  
+  };
 
   const sendQuestion = async (question: string) => {
     if (!question.trim()) return;
@@ -52,7 +48,7 @@ export function useChatbot() {
 
   return {
     file,
-    uploading,
+    setFile,
     error,
     setError,
     patentInfo,
