@@ -3,6 +3,7 @@ import { Message } from '../types';
 import { User, Bot } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import type { Components } from 'react-markdown';
+import { Link } from 'react-router-dom';
 
 interface ChatMessageProps {
   message: Message;
@@ -53,15 +54,25 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
         {children}
       </li>
     ),
-    a: ({ children, href, ...props }) => (
-      <a
-        href={href}
-        className="text-blue-600 underline hover:text-blue-800"
-        {...props}
-      >
-        {children}
-      </a>
-    ),    
+    a: ({ children, href, ...props }) => {
+      const isInternal = href && href.startsWith('/');
+      
+      return isInternal ? (
+        <Link to={href} className="text-blue-600 underline hover:text-blue-800" {...props}>
+          {children}
+        </Link>
+      ) : (
+        <a
+          href={href}
+          className="text-blue-600 underline hover:text-blue-800"
+          target="_blank"
+          rel="noopener noreferrer"
+          {...props}
+        >
+          {children}
+        </a>
+      );
+    },      
     
     // Style for code blocks with fixed TypeScript error
     code: ({ className, children, ...props }) => {
