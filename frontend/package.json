@@ -7,7 +7,7 @@
     "prestart": "npx kill-port 5173",
     "start": "react-scripts start",
     "frontend": "vite",
-    "backend": "docker stop qdrant selenium-firefox backend || true && docker rm qdrant selenium-firefox backend || true && docker-compose up --build",
+    "backend": "docker stop selenium-firefox backend || true && docker rm selenium-firefox backend || true && docker-compose up --build",
     "dev": "concurrently \"npm run backend\" \"npm run frontend\"",
     "build": "vite build",
     "lint": "eslint .",

@@ -14,3 +14,4 @@ qdrant_storage/
 
 node_modules/
 package-lock.json
+package.json

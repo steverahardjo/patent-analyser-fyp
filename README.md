@@ -25,6 +25,12 @@ Ensure you have **Docker** and **Docker Compose** installed on your machine. You
    ```bash
    docker pull holyknight101/backend_patent-analyzer_v1:latest
    docker-compose up --build
+
+   for windows use, replace this line in package.json: 
+   "backend": "docker stop selenium-firefox backend || true && docker rm selenium-firefox backend || true && docker-compose up --build",
+   into 
+   "backend": "docker stop selenium-firefox backend && docker rm selenium-firefox backend && docker-compose up --build",
+
    npm i
    npm run dev
    ```
