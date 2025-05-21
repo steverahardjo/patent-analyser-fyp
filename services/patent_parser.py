@@ -109,8 +109,7 @@ class DocProcessing:
         html = self.retrieveHTML(filename)
         
         if not html:
-            print("Failed to retrieve HTML content.")
-            return self.document
+            raise ValueError("Failed to retrieve HTML content.")
         
         soup = BeautifulSoup(html, 'html.parser')
 

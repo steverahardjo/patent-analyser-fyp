@@ -87,8 +87,11 @@ export default function UploadSection({ onUploadSuccess }: PdfUploadProps) {
       
         // Show user-friendly error message for eco-validation failure
         const backendMessage = err?.response?.data?.error || err.message || '';
-      
-        if (backendMessage.includes("Problem extraction failed")) {
+
+        if (backendMessage.includes("Problem Failed to parse problems dictionary") || backendMessage.includes("Failed to retrieve HTML content.")) {
+          setError("❌ The PDF uploaded appears to be an unsupported format. Please upload a USPTO patent to proceed.");
+          setFile(null);
+        } else if (backendMessage.includes("Problem extraction failed")) {
           setError("❌ This patent PDF could not be proceed. Please ensure the uploaded patent related to eco-solutions to proceed.");
           setFile(null);
         } else {
@@ -224,12 +227,13 @@ export default function UploadSection({ onUploadSuccess }: PdfUploadProps) {
             </div>
           )}
 
-          <button
+          {/* Uncomment for debugging */}
+          {/* <button
             onClick={() => localStorage.clear()}
             className="mt-4 text-xs text-red-600 underline"
           >
             Clear localStorage
-          </button>
+          </button> */}
         </div>
       </div>
     </div>
