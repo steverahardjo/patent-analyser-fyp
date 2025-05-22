@@ -168,3 +168,6 @@ Please provide a clear and concise answer based on the context above.
         self.memory.save_context({"query": query}, {"output": answer})
         
         return answer
+    
+    def clearout_history(self):
+        self.memory.clear()

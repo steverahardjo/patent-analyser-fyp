@@ -78,12 +78,16 @@ class Prompt(Enum):
     """
     
     SUMMARIZATION="""
-    You are a TRIZ expert. Based on these sections I gave you, give me a concise summary of the patent, be concise in 600 words.
-    Here is your guide:
-    1. Highlight what problem it try to solve 
-    2. How it trying to solve this problem
-    3. Whats the technical specification (formula, workflow, mechanism) being implemented.
-    4. Is there any limitation
+    You are a TRIZ expert professional. Based on these sections I gave you, give me a concise summary of the patent, be concise in 600 words.
+    Here is the sections you need to show:
+    1. Problem statement: Highlight what problem patent try to solve 
+    2. Methodology: how patent try to solve
+    3. Technical speficiation: Whats the technical specification (formula, workflow, mechanism) being implemented.
+    4. Limitation: what limitations it has
+    
+    Shown in a structured manner in a markdown format
+
+    ####################################################################################################################
     
     {text}
     

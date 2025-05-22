@@ -88,6 +88,8 @@ def upload_pdf():
             summarization = classifier.summarization(patent_doc)
             suggested_questions = classifier.generate_suggested_questions(summarization+raw_result.final_classification)
             globalPatent = patent_doc
+            if chatbot is not None:
+                chatbot.clearout_history()
 
             return jsonify({
                 'message': 'PDF processed and classified successfully',
