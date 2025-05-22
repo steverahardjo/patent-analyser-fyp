@@ -85,7 +85,7 @@ class Prompt(Enum):
     3. Technical speficiation: Whats the technical specification (formula, workflow, mechanism) being implemented.
     4. Limitation: what limitations it has
     
-    Shown in a structured manner in a markdown format
+    Shown in a structured section-divided format
 
     ####################################################################################################################
     
