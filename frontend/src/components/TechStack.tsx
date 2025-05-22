@@ -5,12 +5,12 @@ import { motion } from 'framer-motion';
 const technologies = [
   {
     name: "OpenAI",
-    logoUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4d/OpenAI_Logo.svg/1024px-OpenAI_Logo.svg.png",
+    logoUrl: "https://cdn.brandfetch.io/idR3duQxYl/w/400/h/400/theme/dark/icon.jpeg?c=1bxid64Mup7aczewSAYMX&t=1741166747419",
     description: "Advanced GPT models for natural language processing"
   },
   {
     name: "Qdrant",
-    logoUrl: "https://qdrant.tech/img/brand-resources-logos/logo.svg",
+    logoUrl: "https://qdrant.tech/img/brand-resources-logos/logomark.svg",
     description: "Production-ready vector database"
   },
   {
@@ -20,7 +20,7 @@ const technologies = [
   },
   {
     name: "Cohere",
-    logoUrl: "https://www.vectorlogo.zone/logos/cohere.ai/cohere.ai-icon.svg",
+    logoUrl: "https://cohere.com/logo.svg",
     description: "Performant reranker model"
   },
   {
