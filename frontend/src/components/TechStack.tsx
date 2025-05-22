@@ -9,9 +9,19 @@ const technologies = [
     description: "Advanced GPT models for natural language processing"
   },
   {
+    name: "Qdrant",
+    logoUrl: "https://qdrant.tech/img/brand-resources-logos/logo.svg",
+    description: "Production-ready vector database"
+  },
+  {
     name: "Hugging Face",
     logoUrl: "https://huggingface.co/front/assets/huggingface_logo.svg",
-    description: "State-of-the-art transformers for text analysis"
+    description: "State-of-the-art Dataset storage and model hosting"
+  },
+  {
+    name: "Cohere",
+    logoUrl: "https://www.vectorlogo.zone/logos/cohere.ai/cohere.ai-icon.svg",
+    description: "Performant reranker model"
   },
   {
     name: "Python",
@@ -29,14 +39,19 @@ const technologies = [
     description: "Frontend UI development for responsive interfaces"
   },
   {
-    name: "GPT-4",
-    logoUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/04/ChatGPT_logo.svg/1024px-ChatGPT_logo.svg.png",
-    description: "Advanced language model for patent analysis"
+    name: "Node.js",
+    logoUrl: "https://www.vectorlogo.zone/logos/nodejs/nodejs-ar21.svg",
+    description: "Open-Source JavaScript runtime environment"
   },
   {
     name: "Tailwind CSS",
     logoUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d5/Tailwind_CSS_Logo.svg/1024px-Tailwind_CSS_Logo.svg.png",
     description: "Utility-first CSS framework for modern designs"
+  },
+  {
+    name: "Azure",
+    logoUrl: "https://www.vectorlogo.zone/logos/microsoft_azure/microsoft_azure-icon.svg",
+    description: "Cloud-based storage and compute resources"
   }
 ];
 
