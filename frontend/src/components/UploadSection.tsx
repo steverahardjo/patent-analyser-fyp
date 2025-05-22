@@ -94,6 +94,9 @@ export default function UploadSection({ onUploadSuccess }: PdfUploadProps) {
         } else if (backendMessage.includes("Problem extraction failed")) {
           setError("❌ This patent PDF could not be proceed. Please ensure the uploaded patent related to eco-solutions to proceed.");
           setFile(null);
+        } else if (err?.response?.status === 422){
+          setError("❌ Invalid upload. Please make sure a valid patent PDF file is selected before uploading.");
+          setFile(null);
         } else {
           setError("❌ Upload failed. Please try again.");
           setFile(null);
