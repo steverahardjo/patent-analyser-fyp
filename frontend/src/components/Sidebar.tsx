@@ -4,9 +4,9 @@ import { Upload, MessageSquare, Home, BarChart } from 'lucide-react';
 const Sidebar = () => {
   const navItems = [
     { to: '/home', icon: Home, label: 'Home' },
+    { to: '/charts', icon: BarChart, label: 'Insights' },
     { to: '/upload', icon: Upload, label: 'Upload' },
     { to: '/chat', icon: MessageSquare, label: 'Chatbot' },
-    { to: '/charts', icon: BarChart, label: 'Insights' },
   ];
 
   return (

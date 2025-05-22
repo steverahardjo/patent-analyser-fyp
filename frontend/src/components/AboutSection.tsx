@@ -92,7 +92,7 @@ const AboutSection = () => {
               The similarity analysis considers not just keywords but the semantic meaning of patent claims and descriptions, providing much more accurate results than traditional keyword-based searches.
             </p>
           </AccordionItem>
-
+{/* 
           <AccordionItem 
             title="Natural Language Processing" 
             icon={<Zap size={24} className="text-purple-500" />}
@@ -103,7 +103,7 @@ const AboutSection = () => {
             <p className="mt-2">
               By breaking down technical jargon and complex legal language, we help innovators quickly grasp the essence of patents without requiring specialized expertise in patent law or specific technical domains.
             </p>
-          </AccordionItem>
+          </AccordionItem> */}
 
           <AccordionItem 
             title="Comprehensive Patent Reports" 

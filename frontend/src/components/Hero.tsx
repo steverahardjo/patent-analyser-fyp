@@ -3,8 +3,10 @@ import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 import { TypeAnimation } from 'react-type-animation';
 import { motion } from 'framer-motion';
 import { ChevronDown } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 const Hero = () => {
+  const navigate = useNavigate();
   const scrollToNextSection = () => {
     const howItWorksSection = document.getElementById('how-it-works');
     if (howItWorksSection) {
@@ -50,7 +52,7 @@ const Hero = () => {
         </motion.div>
 
         <motion.button
-          onClick={scrollToNextSection}
+          onClick={() => navigate(`/upload`)}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.6, duration: 0.7 }}
@@ -83,7 +85,7 @@ const Hero = () => {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 1.2, duration: 0.7 }}
-        className="absolute bottom-24 left-1/2 transform -translate-x-1/2 cursor-pointer z-0 "
+        className="absolute bottom-24 left-1/2 transform -translate-x-1/2 cursor-pointer z-0 mt-24" 
         onClick={scrollToNextSection}
       >
         <ChevronDown size={36} className="text-blue-500 animate-bounce" />
