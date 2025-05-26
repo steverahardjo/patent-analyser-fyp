@@ -46,7 +46,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
           <div>
             <h2 className="text-lg font-medium text-gray-900">
               {document?.patent_number
-                ? `${document.patent_number}.pdf`
+                ? `Patent Number: ${document.patent_number}`
                 : "No PDF Patent Uploaded"}
             </h2>
             <p className="text-sm text-gray-500">

@@ -6,12 +6,12 @@ const technologies = [
   {
     name: "OpenAI",
     logoUrl: "https://cdn.brandfetch.io/idR3duQxYl/w/400/h/400/theme/dark/icon.jpeg?c=1bxid64Mup7aczewSAYMX&t=1741166747419",
-    description: "Advanced GPT models for natural language processing"
+    description: "Powering classification, summarization, and Q&A using GPT models"
   },
   {
     name: "Qdrant",
     logoUrl: "https://qdrant.tech/img/brand-resources-logos/logomark.svg",
-    description: "Production-ready vector database"
+    description: "Stores hybrid embeddings for fast, accurate semantic retrieval"
   },
   {
     name: "Hugging Face",
@@ -21,7 +21,7 @@ const technologies = [
   {
     name: "Cohere",
     logoUrl: "https://cohere.com/logo.svg",
-    description: "Performant reranker model"
+    description: "Used for sparse embeddings in hybrid semantic search"
   },
   {
     name: "Python",
@@ -31,7 +31,7 @@ const technologies = [
   {
     name: "LangChain",
     logoUrl: "https://avatars.githubusercontent.com/u/126733545?s=200&v=4",
-    description: "Framework for developing applications with LLMs"
+    description: "Manages LLM workflows and prompt orchestration in the backend"
   },
   {
     name: "React",
@@ -52,6 +52,26 @@ const technologies = [
     name: "Azure",
     logoUrl: "https://www.vectorlogo.zone/logos/microsoft_azure/microsoft_azure-icon.svg",
     description: "Cloud-based storage and compute resources"
+  },
+  {
+    name: "Flask",
+    logoUrl: "https://upload.wikimedia.org/wikipedia/commons/3/3c/Flask_logo.svg",
+    description: "Lightweight web framework for serving AI endpoints"
+  },
+  {
+    name: "Docker",
+    logoUrl: "https://www.vectorlogo.zone/logos/docker/docker-icon.svg",
+    description: "Containerization of backend services for local testing"
+  },
+  {
+    name: "VS Code",
+    logoUrl: "https://code.visualstudio.com/assets/images/code-stable.png",
+    description: "IDE used to build, debug, and test the project"
+  },
+  {
+    name: "GitHub",
+    logoUrl: "https://cdn-icons-png.flaticon.com/512/25/25231.png",
+    description: "Version control, collaboration, and code management"
   }
 ];
 
@@ -158,4 +178,4 @@ const TechStack = () => {
   );
 };
 
-export default TechStack;
+export default TechStack; 

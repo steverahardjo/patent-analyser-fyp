@@ -1,28 +1,47 @@
-import React, { useRef } from 'react';
+ import React, { useRef } from 'react';
 import { motion } from 'framer-motion';
-import { Upload, Brain, Lightbulb, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Upload, Lightbulb, ChevronLeft, ChevronRight, MessageSquare, Sparkles, Zap } from 'lucide-react';
 
 const steps = [
   {
-    title: "Upload Your Patent",
-    description: "Simply upload your patent documents in PDF, DOC, or text format. Our system processes all standard patent formats from any patent office worldwide.",
+    title: "Step 1: Upload Eco-Focused Patent",
+    description:
+      "Begin by uploading your eco-innovation patent (PDF format only). The system works best with text-based files focused on sustainability, energy, waste reduction, or other green solutions.",
     icon: <Upload size={40} className="text-blue-500" />,
     color: "bg-blue-50 border-blue-200",
     iconBg: "bg-blue-100"
   },
   {
-    title: "AI-Powered Analysis",
-    description: "Our advanced AI algorithms analyze your patent documents using natural language processing and machine learning to extract key insights.",
-    icon: <Brain size={40} className="text-purple-500" />,
+    title: "Step 2: Enter the Chat Workspace",
+    description:
+      "After upload, you’ll be taken to an interactive chat interface. No setup required—just start exploring your patent with guided buttons or natural language questions.",
+    icon: <MessageSquare size={40} className="text-purple-500" />,
     color: "bg-purple-50 border-purple-200",
     iconBg: "bg-purple-100"
   },
   {
-    title: "Instant Insights",
-    description: "Receive comprehensive insights including TRIZ principles identification, similarity analysis, and key feature extraction in seconds.",
-    icon: <Lightbulb size={40} className="text-teal-500" />,
+    title: "Step 3a: Classify with TRIZ Principles",
+    description:
+      "Click 'Classify Claims' to automatically detect the TRIZ principles related to your patent. Each claim is analyzed and labeled to support idea refinement and innovation.",
+    icon: <Sparkles size={40} className="text-yellow-500" />,
+    color: "bg-yellow-50 border-yellow-200",
+    iconBg: "bg-yellow-100"
+  },
+  {
+    title: "Step 3b: Generate a Summary",
+    description:
+      "Click 'Summarize' to get a concise overview of your patent’s key content and intent. Perfect for quick reviews or sharing insights with others.",
+    icon: <Zap size={40} className="text-orange-500" />,
     color: "bg-teal-50 border-teal-200",
     iconBg: "bg-teal-100"
+  },
+  {
+    title: "Step 3c: Ask Questions or Request Charts",
+    description:
+      "Use the chatbot to ask detailed questions about your patent or generate helpful visualizations like TRIZ breakdown charts—no technical skills required.",
+    icon: <Lightbulb size={40} className="text-teal-500" />,
+    color: "bg-indigo-50 border-indigo-200",
+    iconBg: "bg-indigo-100"
   }
 ];
 

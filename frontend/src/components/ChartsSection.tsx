@@ -42,8 +42,8 @@ const ChartsSection: React.FC = () => {
   }, []);
 
   return (
-    <section className="p-4 sm:px-6 lg:px-8 bg-white">
-      <div className="max-w-7xl mx-auto">
+    <section className="h-full flex items-center p-4 sm:px-6 lg:px-8 bg-white">
+      <div className="max-w-7xl mx-auto w-full">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -80,12 +80,12 @@ const ChartsSection: React.FC = () => {
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.4 }}
-          className="bg-gray-50 rounded-xl p-4 shadow-sm min-h-[400px]"
+          className="bg-gray-50 rounded-xl p-4 shadow-sm min-h-[300px]"
         >
           {/* TRIZ Pie Chart */}
           {activeChart === 'triz' && !isLoading && (
-            <div className="h-[400px]">
-              <h3 className="text-xl font-bold text-center mb-4 text-gray-800">Top 5 TRIZ Principles Detected</h3>
+            <div className="h-[350px]">
+              <h3 className="text-xl font-bold text-center mb-4 text-gray-800">Top 8 TRIZ Principles Detected</h3>
               <ResponsiveContainer width="100%" height="90%">
                 <PieChart>
                   <Pie
@@ -109,8 +109,8 @@ const ChartsSection: React.FC = () => {
 
           {/* Topics Bar Chart */}
           {activeChart === 'keywords' && !isLoading && (
-            <div className="h-[400px]">
-              <h3 className="text-xl font-bold text-center mb-4 text-gray-800">Top 15 Patent Topics</h3>
+            <div className="h-[350px]">
+              <h3 className="text-xl font-bold text-center mb-4 text-gray-800">Top 15 Eco-Related Patent Topics</h3>
               <ResponsiveContainer width="100%" height="90%">
                 <BarChart data={topicsData} layout="vertical">
                   <XAxis type="number" />
@@ -124,8 +124,8 @@ const ChartsSection: React.FC = () => {
 
           {/* Claim Complexity Chart */}
           {activeChart === 'complexity' && !isLoading && (
-            <div className="h-[400px]">
-              <h3 className="text-xl font-bold text-center mb-4 text-gray-800">TRIZ Principles per Patent</h3>
+            <div className="h-[350px]">
+              <h3 className="text-xl font-bold text-center mb-4 text-gray-800">Number of TRIZ Principles per Patent</h3>
               <ResponsiveContainer width="100%" height="90%">
                 <BarChart data={complexityData}>
                 <XAxis dataKey="num_principles" label={{ value: 'TRIZ Principles per Patent', position: 'insideBottom', dy: 10 }} />

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { ChevronDown, ChevronUp, Lightbulb, Search, Zap, FileSearch } from 'lucide-react';
+import { ChevronDown, ChevronUp, Lightbulb, Search, Zap, FileSearch,Leaf } from 'lucide-react';
 
 interface AccordionItemProps {
   title: string;
@@ -70,52 +70,53 @@ const AboutSection = () => {
           className="bg-white rounded-xl shadow-sm overflow-hidden"
         >
           <AccordionItem 
-            title="TRIZ Principle Classification" 
+            title="What Are TRIZ Principles?" 
             icon={<Lightbulb size={24} className="text-yellow-500" />}
           >
             <p>
-              Our system automatically identifies which of the 40 TRIZ innovation principles are present in patent documents. TRIZ (Theory of Inventive Problem Solving) is a problem-solving methodology developed by Genrich Altshuller that systematizes innovation processes.
+              TRIZ (Theory of Inventive Problem Solving) is a framework developed to analyze patterns of innovation across thousands of patents. It identifies 40 key principles that drive most technological breakthroughs—such as “Segmentation”, “Another Dimension”, or “Prior Action.”
             </p>
             <p className="mt-2">
-              By mapping patents to TRIZ principles, we help inventors understand the innovation patterns in their field and identify potential new directions for research and development.
+              Our system uses AI to automatically match each patent claim to the most relevant TRIZ principles. This helps you spot what kind of inventive thinking your patent reflects and reveals untapped areas for future innovation.
             </p>
           </AccordionItem>
 
           <AccordionItem 
-            title="AI-Powered Similarity Analysis" 
-            icon={<Search size={24} className="text-blue-500" />}
+            title="What Is an Eco-Solution Patent?" 
+            icon={<Leaf size={24} className="text-green-600" />}
           >
             <p>
-              Using advanced embedding techniques and machine learning algorithms, our system can find patents similar to the one you're analyzing. This helps identify potential prior art, infringement risks, or collaboration opportunities.
+              Eco-solution patents are inventions that aim to reduce environmental impact—whether by improving energy efficiency, enabling renewable alternatives, minimizing waste, or supporting sustainability in manufacturing or daily life.
             </p>
             <p className="mt-2">
-              The similarity analysis considers not just keywords but the semantic meaning of patent claims and descriptions, providing much more accurate results than traditional keyword-based searches.
+              Our tool is optimized for analyzing patents in this domain. By focusing on eco-innovation, we ensure higher relevance and accuracy when classifying ideas using TRIZ principles.
             </p>
           </AccordionItem>
-{/* 
+
           <AccordionItem 
-            title="Natural Language Processing" 
+            title="How Does the AI Work?" 
             icon={<Zap size={24} className="text-purple-500" />}
           >
             <p>
-              Our system uses state-of-the-art natural language processing models to analyze patent text, extract key concepts, and generate human-readable summaries. This makes complex patent documents more accessible and understandable.
+              We use a combination of Large Language Models (LLMs) and semantic similarity algorithms to understand your patent like a human expert would. Each claim is broken into chunks and compared against an internal knowledge base of TRIZ principles.
             </p>
             <p className="mt-2">
-              By breaking down technical jargon and complex legal language, we help innovators quickly grasp the essence of patents without requiring specialized expertise in patent law or specific technical domains.
-            </p>
-          </AccordionItem> */}
-
-          <AccordionItem 
-            title="Comprehensive Patent Reports" 
-            icon={<FileSearch size={24} className="text-teal-500" />}
-          >
-            <p>
-              Generate detailed reports that include key patent metrics, visualization of claims coverage, technology categorization, and market potential assessments. These reports help in making informed decisions about patent strategy.
-            </p>
-            <p className="mt-2">
-              Whether you're conducting due diligence, developing an IP strategy, or researching competition, our comprehensive reports provide actionable insights tailored to your specific needs.
+              Instead of just matching keywords, our system captures the meaning behind each claim—helping you get smarter results, summaries, and suggestions instantly.
             </p>
           </AccordionItem>
+          <AccordionItem 
+            title="How Is This Different from ChatGPT?" 
+            icon={<Zap size={24} className="text-indigo-500" />}
+          >
+            <p>
+              While ChatGPT and other general-purpose AI tools are powerful, they are not specialized for patent analysis. They lack structured logic for interpreting innovation frameworks like TRIZ.
+            </p>
+            <p className="mt-2">
+              Our tool is purpose-built for eco-innovation patents. It combines semantic embeddings with a curated TRIZ knowledge base to give you accurate, explainable insights—something generic models can’t reliably deliver.
+            </p>
+          </AccordionItem>
+
+
         </motion.div>
       </div>
     </section>
