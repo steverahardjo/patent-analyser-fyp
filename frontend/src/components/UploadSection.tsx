@@ -70,11 +70,25 @@ export default function UploadSection({ onUploadSuccess }: PdfUploadProps) {
   
         // ✅ Store placeholder message
         const now = new Date();
+
+        const metadataMsg = [
+          '📄 **Uploaded Patent Metadata**',
+          `- **Patent Number:** ${doc.patent_number}`,
+          `- **Title:** ${doc.title}`,
+          `- **Inventors:** ${doc.Inventors}`,
+          `- **Publication Date:** ${doc.publication_date}`
+        ].join('\n');
+
         localStorage.setItem('chatHistory', JSON.stringify({
           [doc.id]: [
             {
               role: "assistant",
-              content: "✅ Patent processing complete. You may now start by clicking on suggested questions or using the action buttons above to understand your patent.",
+              content: "✅ Patent processing complete. You may now start by asking a question or using the action buttons above to understand your patent.",
+              timestamp: now.toISOString()
+            },
+            {
+              role: "assistant",
+              content: metadataMsg,
               timestamp: now.toISOString()
             }
           ]
