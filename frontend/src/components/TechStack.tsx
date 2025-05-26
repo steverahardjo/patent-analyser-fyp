@@ -171,11 +171,11 @@ const TechStack = () => {
           viewport={{ once: true, amount: 0.2 }}
           className="text-sm text-center text-gray-500 mt-4"
         >
-          Hover to pause scrolling. Drag to explore all technologies.
+          Hover to pause scrolling
         </motion.p>
       </div>
     </section>
   );
 };
 
-export default TechStack; 
+export default TechStack;

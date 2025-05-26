@@ -1,4 +1,4 @@
- import React, { useRef } from 'react';
+import React, { useRef } from 'react';
 import { motion } from 'framer-motion';
 import { Upload, Lightbulb, ChevronLeft, ChevronRight, MessageSquare, Sparkles, Zap } from 'lucide-react';
 
@@ -45,6 +45,7 @@ const steps = [
   }
 ];
 
+
 const HowItWorks = () => {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
@@ -70,7 +71,7 @@ const HowItWorks = () => {
           viewport={{ once: true, amount: 0.2 }}
           className="text-center mb-12"
         >
-          <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">How It Works</h2>
+          <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">How to Use</h2>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
             Our patent analysis chatbot simplifies complex patent research through a seamless three-step process.
           </p>
