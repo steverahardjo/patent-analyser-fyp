@@ -56,7 +56,7 @@ const AboutSection = () => {
           viewport={{ once: true, amount: 0.2 }}
           className="text-center mb-12"
         >
-          <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">About Our Technology</h2>
+          <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">Frequently Asked Questions</h2>
           <p className="text-lg text-gray-600">
             Our patent analysis chatbot leverages advanced AI techniques to provide deep insights into patent documents.
           </p>
