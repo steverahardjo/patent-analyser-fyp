@@ -5,8 +5,12 @@ from services.patent_parser import DocProcessing
 from services.textClassification import PatentClassifier
 from services.LLM import Openai
 from services.chatbot import PatentChatbot
+from services.dtype import CosmoDBDocument
 from flask_cors import CORS
+from services.db import BlobStore, CosmosPatentStore
 
+cosmodb = CosmosPatentStore("cosmicworks", "patent-store")
+blobdb= BlobStore("patent-file")
 app = Flask(__name__)
 CORS(app)
 
@@ -87,6 +91,15 @@ def upload_pdf():
             summarization = classifier.summarization(patent_doc)
             suggested_questions = classifier.generate_suggested_questions(summarization+raw_result.final_classification)
             globalPatent = patent_doc
+
+            chatbot = PatentChatbot(globalPatent)
+            chunks = chatbot.init_chatbot(globalPatent)
+
+            cosmo_db_document = CosmoDBDocument(patent=patent_doc, chunks=chunks)
+            
+            blob_str=blobdb.upload_blob(file)
+            cosmo_db_document.pdf_blob(blob_str)
+            cosmodb.insert_document(cosmo_db_document)
 
             return jsonify({
                 'message': 'PDF processed and classified successfully',

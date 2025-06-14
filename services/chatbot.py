@@ -22,7 +22,6 @@ class PatentChatbot:
         self.collection_name = "patent_chunks"
         self.text = text
         self.model_bm42 = SparseTextEmbedding(model_name="Qdrant/bm42-all-minilm-l6-v2-attentions")
-        self.init_chatbot(self.text)
 
 
     def embed_chunks(self, text, chunk_size=1000, chunk_overlap=200):
@@ -51,7 +50,6 @@ class PatentChatbot:
                 payload={"text": chunk}
             )
             points.append(point)
-        
         return points
 
     def create_qdrant_index(self, points):
@@ -147,6 +145,7 @@ Please provide a clear and concise answer based on the context above.
         full_text = str(text)
         points = self.embed_chunks(full_text)
         self.create_qdrant_index(points)
+        return points
 
 
     def generate_patent_answer(self, query: str):

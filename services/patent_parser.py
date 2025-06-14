@@ -127,6 +127,7 @@ class DocProcessing:
             self.document.publication_date = date_label.find_next('span').get_text(strip=True)
 
         # Extract sections
+        self.document.patentID = filename
         self.document.abstract = self.extract_section_text(soup, 'Abstract')
         self.document.background_summary = self.extract_section_text(soup, 'Background/Summary')
         self.document.description = self.extract_section_text(soup, 'Description')

@@ -1,9 +1,16 @@
 
 from pydantic import BaseModel, Field
 from typing import List,Dict, Optional
+from qdrant_client.models import PointStruct, SparseVector
+
 
 class PatentDocument(BaseModel):
     """Pydantic model for patent document structure with proper field definitions"""
+    patentID: Optional[str] = Field(
+        default = None,
+        description = "id as noted in USPTO",
+        example = "US1234567"
+    )
     title: Optional[str] = Field(
         default=None,
         description="Title of the patent",
@@ -55,9 +62,20 @@ class PatentDocument(BaseModel):
         
     def __str__(self):
         return self.to_string()
-
     
-# 📦 Models
+class StoredChunk(BaseModel):
+    id : str
+    text : str
+    dense_vector: List[float]
+    sparse_indices: List[int]
+    sparse_values: List[float]
+
+class CosmoDBDocument(BaseModel):
+    patent: PatentDocument
+    chunks : List[StoredChunk]
+    pdf_blob: Optional[str]
+    
+# Models
 class SearchResult(BaseModel):
     """
     Pydantic model for the base model from the RAG knowledgebase
