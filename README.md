@@ -1,88 +1,179 @@
-To fix the instructions so they work properly on x64 systems, let's ensure that the instructions are clear, concise, and set up for proper platform compatibility. Since Docker is designed to be cross-platform and works on x64 architecture (which includes Intel and AMD processors), the existing instructions will mostly be the same. However, I’ll add a few points to ensure everything runs smoothly on x64 systems.
+# EcoPatent Analyzer
 
-Here’s the updated version of your `README` with additional clarity for x64 systems:
+An intelligent patent analysis platform that scrapes patent data from the USPTO, classifies inventions using **TRIZ 40 principles**, and provides an interactive Q&A chatbot over patent content — powered by hybrid vector search and LLMs.
 
----
+## Architecture
 
-# 🐳 Backend Patent Analyzer (Dockerized)
-
-## 📦 Run the Docker Container
-
-Ensure you have **Docker** and **Docker Compose** installed on your machine. You can install Docker from the [official Docker documentation](https://docs.docker.com/get-docker/).
-
-### Steps:
-
-1. **Clone the repository**:
-
-   ```bash
-   git clone <repository_url>
-   cd frontend
-   ```
-
-2. **Build and start the Docker containers**:
-   This will pull the necessary images and organize them to run the services specified in the `docker-compose.yml` file.
-
-   ```bash
-   docker pull holyknight101/backend_patent-analyzer_v1:latest
-   docker-compose up --build
-
-   for windows use, replace this line in package.json: 
-   (macOs)
-   "backend": "docker stop selenium-firefox backend || true && docker rm selenium-firefox backend || true && docker-compose up --build",
-   into 
-   (windows)
-   "backend": "docker stop selenium-firefox backend && docker rm selenium-firefox backend && docker-compose up --build",
-
-   npm i
-   npm run dev
-   ```
-
-### App will be available at:
-
-👉 [http://localhost:8000](http://localhost:8000)
-
----
-
-## 📤 Upload a PDF File
-
-To upload a patent document (PDF), you can use the following command with `curl`. Make sure to replace `/path/to/your/file.pdf` with the actual path to the PDF file on your system.
-
-```bash
-curl -X POST -F "file=@/path/to/your/file.pdf" http://localhost:8000/upload
+```
+┌──────────────┐     ┌───────────────────┐     ┌────────────────┐
+│  React UI    │────▶│   Flask API       │────▶│   Qdrant (RAG) │
+│  (Vite + TS) │     │   (port 8000)     │     │  Vector Store  │
+└──────────────┘     └────────┬──────────┘     └────────────────┘
+                              │
+                    ┌─────────┴──────────┐
+                    │                    │
+                    ▼                    ▼
+            ┌──────────────┐   ┌──────────────────┐
+            │  Selenium     │   │  Azure Cosmos DB  │
+            │  (USPTO       │   │  + Blob Storage   │
+            │   scraper)    │   │                   │
+            └──────────────┘   └──────────────────┘
 ```
 
----
+## Tech Stack
 
-## 📤 Enable Chatbot Conversation
+| Layer | Technology |
+|-------|-----------|
+| **Backend** | Python 3.13, Django 6, DRF |
+| **Frontend** | React 18, TypeScript, Vite, Tailwind CSS |
+| **LLM** | OpenAI GPT-4o, TogetherAI (DeepSeek) |
+| **Vector DB** | Qdrant Cloud (dense + sparse hybrid search) |
+| **Reranker** | Cohere (`rerank-english-v3.0`) |
+| **Infrastructure** | Docker, Docker Compose |
+| **Cloud Storage** | Azure Cosmos DB, Azure Blob Storage |
+| **Scraping** | Selenium (headless Firefox on standalone container) |
 
-You can send queries to the backend using this `curl` command to interact with the chatbot. Here’s an example to ask about the patent:
+## Prerequisites
+
+- Python 3.13+
+- Node.js 18+
+- Docker & Docker Compose
+- API keys (see [Environment Variables](#environment-variables))
+
+## Environment Variables
+
+Create a `.env` file in the project root:
+
+| Variable | Description |
+|----------|-------------|
+| `OPENAI_KEY` | OpenAI API key |
+| `TOGETHER_API_KEY` | TogetherAI API key |
+| `COHERE_API_KEY` | Cohere API key |
+| `VECTORDB_KEY` | Qdrant Cloud API key |
+| `QDRANT_URL` | Qdrant Cloud cluster URL |
+| `COSMODB_STRING` | Azure Cosmos DB connection string |
+| `AZURE_BLOB_STRING` | Azure Blob Storage connection string |
+
+## Quick Start (Docker)
 
 ```bash
-curl -X POST http://localhost:8000/query \
-  -H "Content-Type: application/json" \
-  -d '{"question": "What is the patent about?"}'
+# Build and start both backend + Selenium containers
+docker compose up --build
+
+# In another terminal, start the frontend
+cd frontend
+npm install
+npm run frontend
 ```
 
----
+- **Backend** → http://localhost:8000
+- **Frontend** → http://localhost:5173
 
-## 🛑 Stop & Clean Up
+## Manual Setup (without Docker)
 
-To stop and remove the Docker containers, run the following commands:
+### Backend
 
-1. **Stop the containers**:
+```bash
+cd backend
+python -m venv .venv && source .venv/bin/activate
+pip install -r requirements.txt
+python manage.py migrate
+python manage.py runserver 0.0.0.0:8000
+```
 
-   ```bash
-   docker-compose down
-   docker image prune -f
-   ```
----
+### Frontend
 
-## 💡 Works on x64 Architecture
+```bash
+cd frontend
+npm install
+npm run frontend
+```
 
-This setup is designed to work seamlessly on **Linux**, **Windows** (with Docker Desktop), and **macOS** (including Intel & Apple Silicon-based systems).
+### Selenium (required for USPTO scraping)
 
-For **x64 architecture** (Intel and AMD processors), Docker and Docker Compose are supported out of the box. Just ensure you have the correct Docker images and dependencies for the architecture, which Docker handles automatically.
+```bash
+docker run -d -p 4444:4444 --shm-size=2gb selenium/standalone-firefox:latest
+```
 
-Cons: require a lot of memory and storage
+## API Reference
 
-Run frontend
+### `POST /upload`
+
+Upload a patent PDF for analysis.
+
+**Request:** `multipart/form-data` with `file` field (PDF only).
+
+**Response:**
+```json
+{
+  "message": "PDF processed and classified successfully",
+  "patent_number": "US1234567",
+  "title": "System and method for...",
+  "Inventors": "Smith, John",
+  "publication_date": "2023-05-15",
+  "classification_result": { "... TRIZ classification ..." },
+  "summ": "Patent summary...",
+  "suggested_questions": "1. ...\\n2. ..."
+}
+```
+
+### `POST /query`
+
+Ask a question about the currently loaded patent.
+
+**Request:**
+```json
+{ "question": "What is the main innovation?" }
+```
+
+**Response:**
+```json
+{ "answer": "The main innovation is..." }
+```
+
+## Project Structure
+
+```
+├── compose.yaml               # Docker Compose (backend + Selenium)
+├── Dockerfile
+├── backend/
+│   ├── manage.py                  # Django management script
+│   ├── patent_analyzer/           # Django project configuration
+│   │   ├── settings.py
+│   │   ├── urls.py
+│   │   └── wsgi.py
+│   ├── upload/                    # Upload API app
+│   │   └── views.py
+│   ├── query/                     # Query API app
+│   │   └── views.py
+│   ├── requirements.txt
+│   ├── pyproject.toml
+│   ├── uv.lock
+│   ├── Dockerfile
+│   ├── compose.yaml
+│   ├── .dockerignore
+│   └── services/
+│       ├── patent_parser.py       # USPTO scraping (Selenium + BeautifulSoup)
+│       ├── textClassification.py  # TRIZ classification pipeline
+│       ├── chatbot.py             # Q&A chatbot with hybrid search
+│       ├── LLM.py                 # LLM abstractions (OpenAI, TogetherAI)
+│       ├── db.py                  # Azure Cosmos DB & Blob storage
+│       ├── dtype.py               # Pydantic data models
+│       └── prompt_template.py     # LLM prompt templates
+├── frontend/
+│   └── src/
+│       ├── pages/             # Page components
+│       ├── components/        # UI components
+│       ├── hooks/             # Custom React hooks
+│       ├── types/             # TypeScript types
+│       └── api.ts             # Backend API client
+└── docs/
+```
+
+## How It Works
+
+1. **Upload** — A patent PDF is uploaded; the system extracts the patent number using regex.
+2. **Scrape** — Selenium navigates the USPTO Public Patent Search site and scrapes the full patent (title, abstract, claims, description, metadata).
+3. **Classify** — The patent is analyzed against TRIZ 40 principles via a multi-step LLM pipeline: problem extraction → topic classification → vector retrieval → dynamic rule creation → final classification.
+4. **Store** — Patent data is persisted to Azure Cosmos DB; the PDF is stored in Azure Blob Storage; text embeddings (dense + sparse) are indexed in Qdrant.
+5. **Chat** — Users ask questions; the system performs hybrid search (dense + sparse) on Qdrant, reranks results with Cohere, and generates an answer using GPT-4o with conversation memory.

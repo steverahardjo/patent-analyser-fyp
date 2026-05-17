@@ -4,9 +4,7 @@ import ChatInterface from '../components/ChatInterface';
 import ConfirmDialog from '../components/PopUpConfirm';
 import { Message, ActionType } from '../types';
 import { useNavigationRoute } from '../hooks/useNavigation';
-import axios from 'axios';
-
-const BACKEND_URL = 'http://localhost:8000';
+import { askQuery } from '../api';
 
 const ChatbotPage = () => {
   const { documentId } = useParams();
@@ -118,13 +116,11 @@ const ChatbotPage = () => {
     setError('');
 
     try {
-      const res = await axios.post(`${BACKEND_URL}/query`, {
-        question: content,
-      });
+      const data = await askQuery(content);
 
       const aiMessage: Message = {
         id: (Date.now() + 1).toString(),
-        content: res.data.answer,
+        content: data.answer,
         sender: 'ai',
         timestamp: new Date(),
       };

@@ -8,7 +8,9 @@ import numpy as np
 import cohere
 from dotenv import load_dotenv
 from services.LLM import LanguageModel
+
 from services.prompt_template import Prompt
+
 from services.dtype import SearchResult, TRIZPrinciple, ClassificationPipelineOutput, PatentDocument
 
 load_dotenv()

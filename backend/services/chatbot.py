@@ -3,9 +3,8 @@ from dotenv import load_dotenv
 from qdrant_client import QdrantClient
 from qdrant_client.http import models
 from qdrant_client.http.models import Distance
-from langchain.memory import ConversationBufferMemory
 from fastembed import SparseTextEmbedding
-from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain_text_splitters import RecursiveCharacterTextSplitter
 import tqdm
 
 from services.LLM import Openai
@@ -15,9 +14,7 @@ class PatentChatbot:
     def __init__(self, text: PatentDocument | str):
         load_dotenv()
         self.openai_client = Openai("OPENAI_KEY")
-            
-        # Initialize Qdrant Cloud client
-        self.memory = ConversationBufferMemory(memory_key="chat_history", input_key="query")
+        self._chat_history = []
         self.qdrant = QdrantClient(url=os.getenv("QDRANT_URL"), api_key=os.getenv("VECTORDB_KEY"))
         self.collection_name = "patent_chunks"
         self.text = text
@@ -127,7 +124,10 @@ class PatentChatbot:
         return " ".join(point.payload['text'] for point in results.points)
 
     def generate_answer(self, query, context):
-        history = self.memory.load_memory_variables({}).get("chat_history", "")
+        history = "\n".join(
+            f"User: {h['query']}\nAssistant: {h['output']}"
+            for h in self._chat_history[-5:]
+        )
         prompt = f"""
 Context:
 {context}
@@ -164,9 +164,9 @@ Please provide a clear and concise answer based on the context above.
         print(context)
         
         # Save memory for the next interactions
-        self.memory.save_context({"query": query}, {"output": answer})
+        self._chat_history.append({"query": query, "output": answer})
         
         return answer
     
     def clearout_history(self):
-        self.memory.clear()
+        self._chat_history.clear()
