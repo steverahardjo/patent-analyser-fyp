@@ -22,6 +22,7 @@ INSTALLED_APPS = [
     "upload",
     "query",
     "accounts",
+    "session",
 ]
 
 MIDDLEWARE = [

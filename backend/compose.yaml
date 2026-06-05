@@ -8,7 +8,10 @@ services:
     depends_on:
       - selenium-firefox
     env_file:
-      - ../.env
+      - .env
+    volumes:
+      - ./db.sqlite3:/app/db.sqlite3
+      - ./reports:/app/reports
     networks:
       - app-net
     # Optional health check to ensure `server` starts only when dependencies are ready

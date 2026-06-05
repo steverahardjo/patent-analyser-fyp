@@ -9,6 +9,7 @@ def health_check(request):
 urlpatterns = [
     path("health", health_check, name="health"),
     path("auth/", include("accounts.urls")),
+    path("session/", include("session.urls")),
     re_path(r"^upload(?:/|$)", include("upload.urls")),
     re_path(r"^query(?:/|$)", include("query.urls")),
 ]

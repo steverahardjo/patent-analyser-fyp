@@ -8,12 +8,13 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
 from services.agent import PatentAnalysisAgent
-from services.patent_parser import DocProcessing
+from services.patent_parser import DocProcessing, SessionKeyError
 from services.textClassification import PatentClassifier
 from services.LLM import Openai
 from services.chatbot import PatentChatbot
 from services.dtype import CosmoDBDocument
 from services.db import BlobStore, CosmosPatentStore
+from session.models import USPTOSession
 
 from .serializers import FileUploadSerializer
 
@@ -24,24 +25,19 @@ TEXT_PATTERN = re.compile(
     r"(?:US[-\s]*)(\d{5,11})(?:[-\s]*A1)?", re.IGNORECASE
 )
 
-# Lazy initialization — services are created on first use so Django
-# can import this module without requiring all env vars / infra.
-_processor = None
 _classifier = None
 _agent = None
 _cosmodb = None
 _blobdb = None
 
-# In-memory session (single-user for now)
 _patent = None
 _chatbot = None
 
 
 def _get_processor():
-    global _processor
-    if _processor is None:
-        _processor = DocProcessing()
-    return _processor
+    session = USPTOSession.get_active()
+    key = session.key if session else None
+    return DocProcessing(session_key=key)
 
 
 def _get_classifier():
@@ -143,6 +139,11 @@ def upload_pdf(request):
             status=status.HTTP_200_OK,
         )
 
+    except SessionKeyError:
+        return Response(
+            {"error": "session_required", "message": "USPTO session key missing or expired. Please provide a new one via POST /session/key"},
+            status=status.HTTP_401_UNAUTHORIZED,
+        )
     except ValidationError as ve:
         return Response(
             {"error": "Validation failed", "details": ve.errors()},
@@ -201,6 +202,11 @@ def upload_pdf_agent(request):
             status=status.HTTP_200_OK,
         )
 
+    except SessionKeyError:
+        return Response(
+            {"error": "session_required", "message": "USPTO session key missing or expired. Please provide a new one via POST /session/key"},
+            status=status.HTTP_401_UNAUTHORIZED,
+        )
     except ValidationError as ve:
         return Response(
             {"error": "Validation failed", "details": ve.errors()},

@@ -34,3 +34,13 @@ export const askQuery = async (question: string) => {
   const res = await api.post('/query', { question });
   return res.data;
 };
+
+export const setSessionKey = async (key: string) => {
+  const res = await api.post('/session/key', { key });
+  return res.data;
+};
+
+export const getSessionStatus = async () => {
+  const res = await api.get('/session/status');
+  return res.data;
+};
