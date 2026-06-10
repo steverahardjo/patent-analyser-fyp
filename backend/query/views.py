@@ -1,17 +1,19 @@
 from rest_framework import status
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from services.chatbot import PatentChatbot
+from services.dtype import PatentDocument
 
 from .serializers import QuerySerializer
-from upload.views import get_current_patent, get_current_chatbot, set_current_chatbot
 
 
 @api_view(["POST"])
+@permission_classes([IsAuthenticated])
 def interact_query(request):
-    patent = get_current_patent()
-    if not patent:
+    patent_data = request.session.get("patent_data")
+    if not patent_data:
         return Response(
             {"error": "No document uploaded or processed. Please upload a PDF first."},
             status=status.HTTP_400_BAD_REQUEST,
@@ -21,13 +23,10 @@ def interact_query(request):
     serializer.is_valid(raise_exception=True)
 
     question = serializer.validated_data["question"]
-
-    chatbot = get_current_chatbot()
-    if not chatbot:
-        chatbot = PatentChatbot(patent)
-        set_current_chatbot(chatbot)
+    patent_doc = PatentDocument(**patent_data)
 
     try:
+        chatbot = PatentChatbot(patent_doc)
         result = chatbot.generate_patent_answer(question)
         return Response({"answer": result}, status=status.HTTP_200_OK)
     except KeyError as ke:

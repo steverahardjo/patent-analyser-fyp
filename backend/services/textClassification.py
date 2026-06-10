@@ -12,6 +12,7 @@ from services.LLM import LanguageModel
 from services.prompt_template import Prompt
 
 from services.dtype import SearchResult, TRIZPrinciple, ClassificationPipelineOutput, PatentDocument
+from services.rlm_dspy import ProblemExtractor, RLMFullClassifier
 
 load_dotenv()
 VECTORDB_KEY = os.getenv("VECTORDB_KEY")
@@ -139,6 +140,9 @@ class PatentClassifier:
             print(f"Error in guardrail classification: {str(e)}")
             raise
 
+    def _extract_problems_rlm(self, claims: str) -> str:
+        return ProblemExtractor().extract(claims)
+
     def classify_patent(self, abstract: str, claims: str) -> TRIZPrinciple:
         """
         Classifies a patent based on its abstract and claims.
@@ -155,10 +159,9 @@ class PatentClassifier:
             Exception: For other processing errors
         """
         try:
-            # Extract problems
-            extraction_prompt = Prompt.PROBLEM_EXTRACTION.value.format(claims=claims)
-            problems_raw = self.model.chat(extraction_prompt, 3)
-            
+            # Extract problems using RLM
+            problems_raw = self._extract_problems_rlm(claims)
+
             # Apply guardrail
             if not self.add_guardrails(problems_raw):
                 raise ValueError("Problem extraction failed guardrail validation")
@@ -204,6 +207,9 @@ class PatentClassifier:
         except Exception as e:
             print(f"Error in patent classification: {str(e)}")
             raise
+
+    def classify_rlm_full(self, abstract: str, claims: str) -> ClassificationPipelineOutput:
+        return RLMFullClassifier(self.model).classify_structured(abstract, claims)
     
     def summarization(self, text:PatentDocument) -> str:
         summary_prompt=Prompt.SUMMARIZATION.value.format(text=str(text))

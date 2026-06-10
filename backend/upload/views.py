@@ -4,7 +4,8 @@ import re
 from django.http import FileResponse
 from pydantic import ValidationError
 from rest_framework import status
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from services.agent import PatentAnalysisAgent
@@ -12,9 +13,8 @@ from services.patent_parser import DocProcessing, SessionKeyError
 from services.textClassification import PatentClassifier
 from services.LLM import Openai
 from services.chatbot import PatentChatbot
-from services.dtype import CosmoDBDocument
+from services.dtype import CosmoDBDocument, PatentDocument
 from services.db import BlobStore, CosmosPatentStore
-from session.models import USPTOSession
 
 from .serializers import FileUploadSerializer
 
@@ -29,15 +29,19 @@ _classifier = None
 _agent = None
 _cosmodb = None
 _blobdb = None
-
-_patent = None
-_chatbot = None
+_last_processor_key = None
+_last_processor = None
 
 
 def _get_processor():
+    global _last_processor_key, _last_processor
+    from session.models import USPTOSession
     session = USPTOSession.get_active()
     key = session.key if session else None
-    return DocProcessing(session_key=key)
+    if _last_processor_key != key:
+        _last_processor = DocProcessing(session_key=key)
+        _last_processor_key = key
+    return _last_processor
 
 
 def _get_classifier():
@@ -68,25 +72,8 @@ def _get_blobdb():
     return _blobdb
 
 
-def get_current_patent():
-    return _patent
-
-
-def get_current_chatbot():
-    return _chatbot
-
-
-def set_current_chatbot(cb):
-    global _chatbot
-    _chatbot = cb
-
-
-def set_current_patent(p):
-    global _patent
-    _patent = p
-
-
 @api_view(["POST"])
+@permission_classes([IsAuthenticated])
 def upload_pdf(request):
     serializer = FileUploadSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
@@ -109,20 +96,20 @@ def upload_pdf(request):
 
     try:
         patent_doc = _get_processor().process_document(extracted_num)
-        raw_result = _get_classifier().classify_patent(patent_doc.abstract, patent_doc.claims)
+        raw_result = _get_classifier().classify_rlm_full(patent_doc.abstract, patent_doc.claims)
         summarization = _get_classifier().summarization(patent_doc)
         suggested_questions = _get_classifier().generate_suggested_questions(
             summarization + raw_result.final_classification
         )
 
-        set_current_patent(patent_doc)
+        request.session["patent_data"] = patent_doc.model_dump()
+        request.session["patent_number"] = extracted_num
 
         chatbot = PatentChatbot(patent_doc)
         chunks = chatbot.init_chatbot(patent_doc)
-        set_current_chatbot(chatbot)
 
         cosmo_doc = CosmoDBDocument(patent=patent_doc, chunks=chunks)
-        cosmo_doc.pdf_blob(_get_blobdb().upload_blob(file))
+        cosmo_doc.pdf_blob(_get_blobdb().upload_blob(content))
         _get_cosmodb().insert_document(cosmo_doc)
 
         return Response(
@@ -157,6 +144,7 @@ def upload_pdf(request):
 
 
 @api_view(["POST"])
+@permission_classes([IsAuthenticated])
 def upload_pdf_agent(request):
     serializer = FileUploadSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
@@ -179,6 +167,9 @@ def upload_pdf_agent(request):
 
     try:
         patent_doc = _get_processor().process_document(extracted_num)
+        request.session["patent_data"] = patent_doc.model_dump()
+        request.session["patent_number"] = extracted_num
+
         agent = _get_agent()
         agent_result = agent.run(
             patent_doc,
@@ -220,6 +211,7 @@ def upload_pdf_agent(request):
 
 
 @api_view(["GET"])
+@permission_classes([IsAuthenticated])
 def download_report(request, filename: str):
     from services.pdf_generator import REPORTS_DIR
     filepath = os.path.join(REPORTS_DIR, filename)
