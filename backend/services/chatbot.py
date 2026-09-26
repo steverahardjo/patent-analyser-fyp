@@ -1,4 +1,6 @@
 import os
+import numpy as np
+import cohere
 from dotenv import load_dotenv
 from qdrant_client import QdrantClient
 from qdrant_client.http import models
@@ -19,6 +21,8 @@ class PatentChatbot:
         self.collection_name = "patent_chunks"
         self.text = text
         self.model_bm42 = SparseTextEmbedding(model_name="Qdrant/bm42-all-minilm-l6-v2-attentions")
+        self.cohere_client = cohere.Client(os.getenv("COHERE_API_KEY"))
+        self.rerank_model = "rerank-english-v3.0"
 
 
     def embed_chunks(self, text, chunk_size=1000, chunk_overlap=200):
@@ -98,6 +102,11 @@ class PatentChatbot:
                 print("You need write permissions to create and manage collections.")
             raise
 
+    def _min_max_normalize(self, arr) -> np.ndarray:
+        arr = np.array(arr, dtype=float)
+        min_val, max_val = np.min(arr), np.max(arr)
+        return (arr - min_val) / (max_val - min_val) if max_val > min_val else np.zeros_like(arr)
+
     def retrieve_chunks(self, query, top_k=10):
         # Get embeddings for the query
         dense_embedding = self.openai_client.embed(query)
@@ -120,8 +129,30 @@ class PatentChatbot:
             limit=top_k
         )
         
-        # Simply append all results
-        return " ".join(point.payload['text'] for point in results.points)
+        return [
+            {"text": point.payload["text"], "score": point.score}
+            for point in results.points
+        ]
+
+    def rerank_chunks(self, query, chunks, top_n=5):
+        if not chunks:
+            return []
+
+        documents = [chunk["text"] for chunk in chunks]
+        rerank = self.cohere_client.rerank(
+            model=self.rerank_model,
+            query=query,
+            documents=documents,
+            top_n=min(top_n, len(documents)),
+        )
+
+        norm_scores = self._min_max_normalize([chunk["score"] for chunk in chunks])
+        ranked = [
+            (0.7 * result.relevance_score + 0.3 * norm_scores[result.index], chunks[result.index]["text"])
+            for result in rerank.results
+        ]
+        ranked.sort(key=lambda item: item[0], reverse=True)
+        return [text for _, text in ranked]
 
     def generate_answer(self, query, context):
         history = "\n".join(
@@ -154,10 +185,10 @@ Please provide a clear and concise answer based on the context above.
         retrieved = self.retrieve_chunks(query)
         
         # Rerank chunks for better relevance
-        #reranked = self.rerank_chunks(query, retrieved)
+        reranked = self.rerank_chunks(query, retrieved)
         
         # Build context from reranked chunks
-        context = "".join(retrieved)
+        context = "\n".join(reranked)
         
         # Generate final answer from context
         answer = self.generate_answer(query, context)
